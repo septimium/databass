@@ -4,54 +4,38 @@ services:
   postgres:
     image: postgres:15
     container_name: databass-db
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
       POSTGRES_DB: databass
-    ports:
-      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - databass-net
 
-  discovery-service:
-    build: ./discovery-service
-    container_name: discovery-service
+  rabbitmq:
+    image: rabbitmq:3.12-management
+    container_name: databass-mq
     ports:
-      - "8761:8761"
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
+      - "5672:5672"
+      - "15672:15672"
     networks:
       - databass-net
 
-  api-gateway:
-    build: ./api-gateway
-    container_name: api-gateway
+  minio:
+    image: minio/minio
+    container_name: databass-storage
     ports:
-      - "8080:8080"
+      - "9000:9000"
+      - "9001:9001"
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka/
-    depends_on:
-      - discovery-service
-    networks:
-      - databass-net
-
-  core-service:
-    build: ./core-service
-    container_name: core-service
-    ports:
-      - "8081:8081"
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka/
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/databass
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=password
-    depends_on:
-      - discovery-service
-      - postgres
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
     networks:
       - databass-net
 
@@ -61,3 +45,4 @@ networks:
 
 volumes:
   postgres_data:
+  minio_data:
