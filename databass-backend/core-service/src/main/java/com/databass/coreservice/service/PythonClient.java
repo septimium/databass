@@ -28,12 +28,12 @@ public class PythonClient {
         this.objectMapper = objectMapper;
     }
 
-    public byte[] generateSong(String prompt, int duration) {
+    public byte[] generateSong(String prompt, int duration, double temp, int topK, double guidance) {
         try {
             String cleanTriggerUrl = triggerUrl.endsWith("/") ?
                     triggerUrl.substring(0, triggerUrl.length() - 1) : triggerUrl;
 
-            Object[] dataPayload = new Object[]{ prompt, duration, 3.2, 0.85, 250 };
+            Object[] dataPayload = new Object[]{ prompt, duration, guidance, temp, topK };
             Map<String, Object> requestBody = Map.of("data", dataPayload);
 
             String triggerResponse = webClient.post()
@@ -73,9 +73,9 @@ public class PythonClient {
 
             WebClient largeFileClient = WebClient.builder()
                     .exchangeStrategies(ExchangeStrategies.builder()
-                            .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)) // 16MB Limit
+                            .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(16 * 1024 * 1024))
                             .build())
-                    .build(); // special webclient for large files
+                    .build();
 
             return largeFileClient.get()
                     .uri(audioUrl)

@@ -25,13 +25,19 @@ public class MusicConsumer {
 
         try {
             System.out.println("Generating song for: " + song.getPrompt());
-            byte[] audioBytes = pythonClient.generateSong(song.getPrompt(), 10);
+            byte[] audioBytes = pythonClient.generateSong(
+                    song.getPrompt(),
+                    song.getDuration(),
+                    song.getTemperature(),
+                    song.getTopK(),
+                    song.getGuidanceScale()
+            );
 
             System.out.println("💾 Uploading " + audioBytes.length + " bytes to Storage...");
             String url = storageService.uploadSong(audioBytes, songId);
 
             song.setStatus("COMPLETED");
-            song.setAudioUrl(url);
+            song.setS3Url(url);
             songRepository.save(song);
 
             System.out.println("Generation Finished! URL: " + url);

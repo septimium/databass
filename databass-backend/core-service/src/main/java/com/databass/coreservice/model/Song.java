@@ -5,8 +5,8 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "songs")
 @Data
+@Table(name = "songs")
 public class Song {
 
     @Id
@@ -17,13 +17,15 @@ public class Song {
 
     private String status;
 
-    private String audioUrl;
+    private String s3Url;
 
-    private LocalDateTime createdAt;
+    private int duration;
 
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-        if (status == null) status = "PENDING";
-    }
+    private double temperature;
+
+    private int topK;
+
+    private double guidanceScale;
+
+    private LocalDateTime createdAt = LocalDateTime.now();
 }
