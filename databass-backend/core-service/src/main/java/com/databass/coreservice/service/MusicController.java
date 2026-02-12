@@ -15,6 +15,7 @@ public class MusicController {
 
     private final MusicProducer musicProducer;
     private final UserService userService;
+    private final GeminiClient geminiClient;
 
     @PostMapping("/generate")
     public ResponseEntity<?> generateMusic(@RequestBody GenerateRequest request) {
@@ -28,11 +29,22 @@ public class MusicController {
             cost += 20;
         }
 
+        if (request.isEnhancePrompt()) {
+            cost += 15;
+        }
+
         try {
             userService.deductCredits(username, cost);
         } catch (RuntimeException e) {
             System.out.println("User " + username + " attempted to generate a song but had insufficient credits. Required: " + cost);
             return ResponseEntity.status(402).body(e.getMessage());
+        }
+
+        String finalPrompt = request.getPrompt();
+
+        if (request.isEnhancePrompt()) {
+            finalPrompt = geminiClient.enhancePrompt(request.getPrompt());
+            request.setPrompt(finalPrompt);
         }
 
         Song song = musicProducer.startGeneration(request);

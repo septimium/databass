@@ -16,4 +16,6 @@ public class GenerateRequest {
     private Integer topK;
 
     private Double guidanceScale;
+
+    private boolean enhancePrompt;
 }

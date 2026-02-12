@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 public class MusicConsumer {
 
     private final SongRepository songRepository;
-    private final PythonClient pythonClient;
+    private final MusicGenClient musicGenClient;
     private final StorageService storageService;
 
     @RabbitListener(queues = RabbitConfig.MUSIC_QUEUE)
@@ -25,7 +25,7 @@ public class MusicConsumer {
 
         try {
             System.out.println("Generating song for: " + song.getPrompt());
-            byte[] audioBytes = pythonClient.generateSong(
+            byte[] audioBytes = musicGenClient.generateSong(
                     song.getPrompt(),
                     song.getDuration(),
                     song.getTemperature(),

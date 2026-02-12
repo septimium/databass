@@ -12,7 +12,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.Map;
 
 @Service
-public class PythonClient {
+public class MusicGenClient {
 
     private final WebClient webClient;
     private final ObjectMapper objectMapper;
@@ -23,7 +23,7 @@ public class PythonClient {
     @Value("${python.api.trigger.url}")
     private String triggerUrl;
 
-    public PythonClient(WebClient.Builder webClientBuilder, ObjectMapper objectMapper) {
+    public MusicGenClient(WebClient.Builder webClientBuilder, ObjectMapper objectMapper) {
         this.webClient = webClientBuilder.build();
         this.objectMapper = objectMapper;
     }
