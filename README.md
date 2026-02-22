@@ -1,10 +1,5 @@
 # 🎵 Databass
 
-![Status: Work in Progress](https://img.shields.io/badge/Status-Work_in_Progress-orange?style=flat-square)
-![Stack: Spring Boot](https://img.shields.io/badge/Backend-Spring_Boot-6DB33F?style=flat-square&logo=springboot)
-![Stack: Vue.js](https://img.shields.io/badge/Frontend-Vue.js-4FC08D?style=flat-square&logo=vuedotjs)
-![Stack: Docker](https://img.shields.io/badge/Infrastructure-Docker-2496ED?style=flat-square&logo=docker)
-
 **Databass** is a full-stack AI music generation platform. It allows users to turn simple text prompts into high-quality audio tracks using state-of-the-art AI models, complete with a built-in credit economy and prompt-enhancement engine.
 
 ---
