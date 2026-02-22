@@ -1,22 +1,17 @@
-# 🎵 Databass
-
-![Status: Work in Progress](https://img.shields.io/badge/Status-Work_in_Progress-orange?style=flat-square)
-![Stack: Spring Boot](https://img.shields.io/badge/Backend-Spring_Boot-6DB33F?style=flat-square&logo=springboot)
-![Stack: Vue.js](https://img.shields.io/badge/Frontend-Vue.js-4FC08D?style=flat-square&logo=vuedotjs)
-![Stack: Docker](https://img.shields.io/badge/Infrastructure-Docker-2496ED?style=flat-square&logo=docker)
+# Databass
 
 **Databass** is a full-stack AI music generation platform. It allows users to turn simple text prompts into high-quality audio tracks using state-of-the-art AI models, complete with a built-in credit economy and prompt-enhancement engine.
 
 ---
 
-## ✨ Features
+## Features
 * **AI Music Generation**: Queue and generate audio tracks asynchronously using Hugging Face models.
 * **LLM Prompt Enhancement**: Automatically upgrades basic user inputs (e.g., "sad piano") into professional-grade AI prompts using Google Gemini.
 * **Credit-Based Economy**: Users pay "credits" based on song duration and advanced parameter usage.
 * **Secure Authentication**: JWT-based user registration and login.
 * **Cloud Storage**: Audio files are safely stored and served via MinIO (S3-compatible storage).
 
-## 🛠️ Tech Stack
+## Tech Stack
 **Frontend:**
 * Vue 3 + Vite
 * Tailwind CSS
@@ -30,7 +25,7 @@
 * MinIO (Object Storage)
 * APIs: Google Gemini & Hugging Face Inference
 
-## 🚧 Current Status & Roadmap
+## Current Status & Roadmap
 This project is currently under active development. 
 
 - [x] **Backend Engine**: DB, Auth, Economy, Queues, and AI integration complete.
@@ -39,7 +34,7 @@ This project is currently under active development.
 - [ ] **Frontend UI**: Login page, User Dashboard, and Audio Player (In Progress).
 - [ ] **Deployment**: Dockerize Spring Boot and Vue services for full production.
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 * Java 17+
