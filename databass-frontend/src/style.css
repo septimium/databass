@@ -73,3 +73,22 @@
   opacity: 0;
   transform: translateY(20px) translateX(-20px);
 }
+
+@keyframes floatCredit {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-25px) scale(1.2); }
+}
+
+.animate-credit-float {
+  animation: floatCredit 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes neonFade {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.25; }
+}
+
+.flicker-1 { animation: neonFade 4s ease-in-out infinite; }
+.flicker-2 { animation: neonFade 3s ease-in-out infinite 0.7s; }
+.flicker-3 { animation: neonFade 5s ease-in-out infinite 1.2s; }
+.flicker-4 { animation: neonFade 2.5s ease-in-out infinite 0.3s; }

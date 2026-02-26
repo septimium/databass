@@ -24,7 +24,7 @@ public class User {
     private String email;
 
     @Column(nullable = false)
-    private Integer credits = 100;
+    private Integer credits = 0;
 
     @Column(nullable = false)
     private Integer currentStreak = 0;

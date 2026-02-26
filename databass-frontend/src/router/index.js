@@ -20,7 +20,19 @@ const routes = [
     path: '/dashboard', 
     name: 'Dashboard',
     component: () => import('../views/Dashboard.vue'),
-    meta: { requiresAuth: true } 
+    meta: { requiresAuth: true }, 
+    children: [
+      {
+        path: '',
+        name: 'Studio',
+        component: () => import('../views/Studio.vue')
+      },
+      {
+        path: 'profile/:username', 
+        name: 'Profile',
+        component: () => import('../views/Profile.vue')
+      }
+    ]
   }
 ]
 
@@ -33,7 +45,7 @@ router.beforeEach((to, from, next) => {
   const authStore = useAuthStore()
   const isAuth = authStore.isAuthenticated()
 
-  if (to.meta.requiresAuth && !isAuth) {
+  if (to.matched.some(record => record.meta.requiresAuth) && !isAuth) {
     next('/login')
   } 
   else if ((to.name === 'Login' || to.name === 'Register') && isAuth) {
