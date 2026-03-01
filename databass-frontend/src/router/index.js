@@ -3,10 +3,6 @@ import { useAuthStore } from '../stores/auth'
 
 const routes = [
   { 
-    path: '/', 
-    redirect: '/dashboard' 
-  },
-  { 
     path: '/login', 
     name: 'Login',
     component: () => import('../views/Login.vue') 
@@ -17,13 +13,13 @@ const routes = [
     component: () => import('../views/Register.vue') 
   },
   { 
-    path: '/dashboard', 
-    name: 'Dashboard',
-    component: () => import('../views/Dashboard.vue'),
+    path: '/', 
+    component: () => import('../views/Dashboard.vue'), 
     meta: { requiresAuth: true }, 
+    redirect: '/studio', 
     children: [
       {
-        path: '',
+        path: 'studio',
         name: 'Studio',
         component: () => import('../views/Studio.vue')
       },
@@ -31,7 +27,15 @@ const routes = [
         path: 'profile/:username', 
         name: 'Profile',
         component: () => import('../views/Profile.vue')
-      }
+      },
+      {
+        path: 'faq', 
+        name: 'FAQ',
+        component: () => import('../views/FAQ.vue')
+      },
+      { path: 'library', name: 'Library', component: () => import('../views/Studio.vue') },
+      { path: 'discover', name: 'Discover', component: () => import('../views/Studio.vue') },
+      { path: 'settings', name: 'Settings', component: () => import('../views/Studio.vue') }
     ]
   }
 ]
@@ -49,7 +53,7 @@ router.beforeEach((to, from, next) => {
     next('/login')
   } 
   else if ((to.name === 'Login' || to.name === 'Register') && isAuth) {
-    next('/dashboard')
+    next('/studio') 
   } 
   else {
     next()

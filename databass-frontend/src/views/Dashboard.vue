@@ -67,16 +67,25 @@ const handleClaimDaily = async () => {
   }
 }
 
+const handleCreditSpent = (cost) => {
+  creditDiff.value = -cost 
+  credits.value -= cost    
+  
+  showCreditAnim.value = false 
+  setTimeout(() => showCreditAnim.value = true, 10) 
+}
+
 const handleLogout = () => {
   authStore.logout()
   router.push('/login')
 }
 
 const navItems = [
-  { name: 'Studio', path: '/dashboard', icon: 'M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z' },
-  { name: 'Library', path: '/dashboard', icon: 'M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3' },
-  { name: 'Discover', path: '/dashboard', icon: 'M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9' },
-  { name: 'Settings', path: '/dashboard', icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z' }
+  { name: 'Studio', path: '/studio', icon: 'M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3' },
+  { name: 'Library', path: '/library', icon: 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10' },
+  { name: 'Discover', path: '/discover', icon: 'M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9' },
+  { name: 'Settings', path: '/settings', icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z' },
+  { name: 'FAQ', path: '/faq', icon: 'M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' }
 ]
 </script>
 
@@ -107,7 +116,7 @@ const navItems = [
           :key="item.name"
           :to="item.path"
           :class="[
-            route.path === item.path && item.name === 'Studio'
+            route.path.includes(item.path)
               ? 'bg-gradient-to-r from-lime-500/20 to-transparent border-l-2 border-lime-400 text-lime-400' 
               : 'hover:bg-slate-800/50 text-slate-400 hover:text-slate-200 border-l-2 border-transparent',
             'w-full flex items-center gap-3 px-4 py-3 rounded-r-lg transition-all text-sm font-bold tracking-wider uppercase'
@@ -154,13 +163,16 @@ const navItems = [
             <span class="font-black text-slate-200 tracking-wider">{{ credits }}</span>
             <span 
               v-if="showCreditAnim" 
-              class="absolute right-0 top-0 font-black text-sm drop-shadow-md animate-credit-float pointer-events-none text-lime-400"
+              :class="[
+                'absolute right-0 top-0 font-black text-sm drop-shadow-md animate-credit-float pointer-events-none',
+                creditDiff > 0 ? 'text-lime-400' : 'text-red-400'
+              ]"
             >
-              +{{ creditDiff }}
+              {{ creditDiff > 0 ? '+' : '' }}{{ creditDiff }}
             </span>
           </div>
 
-          <router-link :to="`/dashboard/profile/${authStore.user || 'DJ_Guest'}`" class="flex items-center gap-3 pl-4 border-l border-slate-700 hover:opacity-80 transition-opacity cursor-pointer group">
+          <router-link :to="`/profile/${authStore.user || 'DJ_Guest'}`" class="flex items-center gap-3 pl-4 border-l border-slate-700 hover:opacity-80 transition-opacity cursor-pointer group">
             <div class="text-right hidden sm:block">
               <div class="text-xs font-black text-slate-200 uppercase tracking-widest group-hover:text-lime-400 transition-colors">{{ authStore.user || 'DJ_Guest' }}</div>
             </div>
@@ -178,7 +190,7 @@ const navItems = [
       <div class="flex-1 overflow-y-auto relative">
         <div class="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-lime-600/10 rounded-full blur-[100px] pointer-events-none"></div>
         
-        <router-view :key="route.fullPath"></router-view>
+        <router-view :key="route.fullPath" @credit-spent="handleCreditSpent"></router-view>
       </div>
     </main>
 
