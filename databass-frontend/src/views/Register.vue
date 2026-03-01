@@ -29,7 +29,6 @@ const handleRegister = async () => {
   popupMessage.value = ''
   isLoading.value = true
   
-  // 🛡️ CUSTOM VALIDATION
   if (!email.value.trim()) {
     showPopup('EMAIL ADDRESS IS REQUIRED.', 'error')
     isLoading.value = false

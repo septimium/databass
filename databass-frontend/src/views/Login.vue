@@ -25,7 +25,6 @@ const handleLogin = async () => {
   errorMessage.value = ''
   isLoading.value = true
   
-  // 🛡️ CUSTOM VALIDATION
   if (!username.value.trim()) {
     showPopup('USERNAME IS REQUIRED.')
     isLoading.value = false

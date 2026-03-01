@@ -163,7 +163,6 @@ const navItems = [
           <router-link :to="`/dashboard/profile/${authStore.user || 'DJ_Guest'}`" class="flex items-center gap-3 pl-4 border-l border-slate-700 hover:opacity-80 transition-opacity cursor-pointer group">
             <div class="text-right hidden sm:block">
               <div class="text-xs font-black text-slate-200 uppercase tracking-widest group-hover:text-lime-400 transition-colors">{{ authStore.user || 'DJ_Guest' }}</div>
-              <div class="text-[10px] text-lime-400/70 font-bold uppercase tracking-widest">Active</div>
             </div>
             <div class="h-9 w-9 rounded-full bg-gradient-to-br from-yellow-400 to-lime-500 p-0.5 shadow-lg shadow-lime-900/50 group-hover:shadow-lime-400/50 transition-shadow">
               <div class="h-full w-full bg-slate-900 rounded-full flex items-center justify-center">
@@ -179,7 +178,7 @@ const navItems = [
       <div class="flex-1 overflow-y-auto relative">
         <div class="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-lime-600/10 rounded-full blur-[100px] pointer-events-none"></div>
         
-        <router-view></router-view>
+        <router-view :key="route.fullPath"></router-view>
       </div>
     </main>
 
