@@ -24,6 +24,7 @@ public class MusicProducer {
                 .orElseThrow(() -> new RuntimeException("User not found: " + username));
 
         Song song = new Song();
+        song.setTitle(request.getTitle() != null && !request.getTitle().isBlank() ? request.getTitle() : "Untitled Track");
         song.setUser(user);
         song.setPublic(true);
         song.setPrompt(request.getPrompt());

@@ -33,7 +33,7 @@ const routes = [
         name: 'FAQ',
         component: () => import('../views/FAQ.vue')
       },
-      { path: 'library', name: 'Library', component: () => import('../views/Studio.vue') },
+      { path: 'library', name: 'Library', component: () => import('../views/Library.vue') },
       { path: 'discover', name: 'Discover', component: () => import('../views/Studio.vue') },
       { path: 'settings', name: 'Settings', component: () => import('../views/Studio.vue') }
     ]

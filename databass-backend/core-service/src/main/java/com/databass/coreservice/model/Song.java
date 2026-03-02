@@ -14,6 +14,9 @@ public class Song {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    private String title = "Untitled Track";
+
     private String prompt;
 
     private String status;
@@ -37,4 +40,7 @@ public class Song {
 
     @Column(nullable = false)
     private boolean isPublic = true;
+
+    @Column(nullable = false)
+    private Integer streamCount = 0;
 }

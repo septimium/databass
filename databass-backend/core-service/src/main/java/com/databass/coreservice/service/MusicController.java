@@ -95,4 +95,46 @@ public class MusicController {
                 "isPublic", song.isPublic()
         ));
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> editSong(@PathVariable("id") Long id, @RequestBody Map<String, Object> updates) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Song song = songRepository.findById(id).orElseThrow(() -> new RuntimeException("Song not found"));
+
+        if (!song.getUser().getUsername().equals(username)) {
+            return ResponseEntity.status(403).body(Map.of("error", "UNAUTHORIZED ACTION."));
+        }
+
+        if (updates.containsKey("title")) {
+            song.setTitle((String) updates.get("title"));
+        }
+        if (updates.containsKey("isPublic")) {
+            song.setPublic((Boolean) updates.get("isPublic"));
+        }
+
+        return ResponseEntity.ok(songRepository.save(song));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteSong(@PathVariable("id") Long id) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Song song = songRepository.findById(id).orElseThrow(() -> new RuntimeException("Song not found"));
+
+        if (!song.getUser().getUsername().equals(username)) {
+            return ResponseEntity.status(403).body(Map.of("error", "UNAUTHORIZED ACTION."));
+        }
+
+        songRepository.delete(song);
+        return ResponseEntity.ok(Map.of("message", "Track deleted successfully."));
+    }
+
+    @PostMapping("/{id}/stream")
+    public ResponseEntity<?> incrementStreamCount(@PathVariable("id") Long id) {
+        Song song = songRepository.findById(id).orElseThrow(() -> new RuntimeException("Song not found"));
+
+        song.setStreamCount(song.getStreamCount() + 1);
+        songRepository.save(song);
+
+        return ResponseEntity.ok(Map.of("streamCount", song.getStreamCount()));
+    }
 }

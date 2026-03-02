@@ -5,6 +5,8 @@ import lombok.Data;
 @Data
 public class GenerateRequest {
 
+    private String title;
+
     private String prompt;
 
     private int duration;

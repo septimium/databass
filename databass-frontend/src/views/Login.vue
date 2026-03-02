@@ -50,7 +50,7 @@ const handleLogin = async () => {
     }
 
     authStore.setAuth(actualToken, username.value)
-    router.push('/dashboard')
+    router.push('/studio')
     
   } catch (error) {
     if (error.response) {
