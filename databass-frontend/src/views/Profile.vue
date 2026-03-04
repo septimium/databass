@@ -7,6 +7,7 @@ const route = useRoute()
 const router = useRouter()
 const username = route.params.username
 
+const profileInfo = ref({ bio: '', avatarUrl: '' })
 const generatedTracks = ref([])
 const isLoading = ref(true)
 const errorMessage = ref('')
@@ -16,10 +17,15 @@ const playingTrackId = ref(null)
 
 onMounted(async () => {
   try {
-    const response = await api.get(`/music/profile/${username}`)
-    generatedTracks.value = response.data
+    const [tracksResponse, userResponse] = await Promise.all([
+      api.get(`/music/profile/${username}`),
+      api.get(`/users/public/${username}`)
+    ])
+    
+    generatedTracks.value = tracksResponse.data
+    profileInfo.value = userResponse.data
   } catch (error) {
-    if (error.response && error.response.status === 404) {
+    if (error.response?.status === 404) {
       errorMessage.value = 'PRODUCER NOT FOUND IN DATABASS.'
     } else {
       errorMessage.value = 'SYSTEM ERROR. COULD NOT LOAD PROFILE.'
@@ -45,9 +51,7 @@ const togglePlay = (track) => {
     return
   }
 
-  if (currentAudio.value) {
-    currentAudio.value.pause()
-  }
+  if (currentAudio.value) currentAudio.value.pause()
 
   currentAudio.value = new Audio(track.s3Url)
   currentAudio.value.play()
@@ -102,20 +106,30 @@ const formatDuration = (seconds) => {
     </div>
 
     <div v-else>
+      
       <div class="bg-slate-900/60 backdrop-blur-xl border border-slate-800 rounded-2xl p-8 shadow-2xl mb-8">
-        <div class="flex flex-col sm:flex-row items-center justify-between gap-6 border-b border-slate-800/80 pb-8 text-center sm:text-left">
-          <div class="flex flex-col sm:flex-row items-center gap-6">
-            <div class="h-24 w-24 rounded-full bg-gradient-to-br from-yellow-400 to-lime-500 p-1 shadow-[0_0_30px_rgba(132,204,22,0.3)] shrink-0">
-              <div class="h-full w-full bg-slate-900 rounded-full flex items-center justify-center text-3xl font-black text-slate-300 uppercase">{{ username.charAt(0) }}</div>
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 border-b border-slate-800/80 pb-8">
+          
+          <div class="flex items-start gap-6">
+            <div class="h-28 w-28 rounded-full bg-gradient-to-br from-yellow-400 to-lime-500 p-1 shadow-[0_0_30px_rgba(132,204,22,0.3)] shrink-0 overflow-hidden">
+              <img v-if="profileInfo.avatarUrl" :src="profileInfo.avatarUrl" class="h-full w-full object-cover rounded-full bg-slate-900" />
+              <div v-else class="h-full w-full bg-slate-900 rounded-full flex items-center justify-center text-4xl font-black text-slate-300 uppercase">
+                {{ username.charAt(0) }}
+              </div>
             </div>
-            <div>
+            
+            <div class="pt-2">
               <h1 class="text-4xl font-black uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-lime-400 to-yellow-400">{{ username }}</h1>
               <p class="text-slate-500 font-bold uppercase tracking-widest mt-1">{{ producerTitle }}</p>
+              
+              <p v-if="profileInfo.bio" class="text-slate-400 mt-4 max-w-xl text-sm italic border-l-2 border-slate-700 pl-4">
+                "{{ profileInfo.bio }}"
+              </p>
             </div>
           </div>
         </div>
 
-        <div class="flex gap-12 pt-6 justify-center sm:justify-start">
+        <div class="flex gap-12 pt-6">
           <div>
             <div class="text-3xl font-black text-slate-200">{{ generatedTracks.length }}</div>
             <div class="text-xs font-bold text-slate-500 uppercase tracking-widest">Public Tracks</div>

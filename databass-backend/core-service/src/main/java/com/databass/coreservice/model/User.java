@@ -31,4 +31,9 @@ public class User {
 
     @Column(name = "last_claim_date")
     private LocalDate lastClaimDate;
+
+    @Column(length = 500)
+    private String bio;
+
+    private String avatarUrl;
 }

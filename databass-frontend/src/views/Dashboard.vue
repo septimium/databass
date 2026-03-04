@@ -13,6 +13,7 @@ const isSidebarOpen = ref(true)
 const credits = ref(0) 
 const creditDiff = ref(0)
 const showCreditAnim = ref(false)
+const userAvatar = ref('') 
 
 const popupMessage = ref('')
 const popupType = ref('success')
@@ -30,6 +31,7 @@ onMounted(async () => {
     const response = await api.get('/users/me')
     authStore.user = response.data.username 
     credits.value = response.data.credits 
+    userAvatar.value = response.data.avatarUrl 
   } catch (error) {
     console.error("Failed to sync user profile. Token might be expired.")
     handleLogout() 
@@ -39,29 +41,23 @@ onMounted(async () => {
 const handleClaimDaily = async () => {
   try {
     const response = await api.post('/credits/claim')
-    
     creditDiff.value = response.data.creditsRewarded
     credits.value = response.data.totalCredits 
-    
     showCreditAnim.value = false 
     setTimeout(() => showCreditAnim.value = true, 10) 
 
     const streakBonus = response.data.creditsRewarded - 50;
-    
     if (streakBonus > 0) {
       showPopup(`+50 BASE & +${streakBonus} STREAK BONUS! (DAY ${response.data.currentStreak}) 🔥`, 'success')
     } else {
       showPopup(`+50 CREDITS! STREAK INITIATED (DAY 1) `, 'success')
     }
-
   } catch (error) {
-    if (error.response && error.response.data && error.response.data.error) {
+    if (error.response?.data?.error) {
       showPopup(error.response.data.error.toUpperCase(), 'error')
-    } 
-    else if (error.response && error.response.status === 400) {
+    } else if (error.response?.status === 400) {
       showPopup('ALREADY CLAIMED TODAY. COME BACK TOMORROW.', 'error')
-    } 
-    else {
+    } else {
       showPopup('SYSTEM ERROR. COULD NOT CLAIM.', 'error')
     }
   }
@@ -70,7 +66,6 @@ const handleClaimDaily = async () => {
 const handleCreditSpent = (cost) => {
   creditDiff.value = -cost 
   credits.value -= cost    
-  
   showCreditAnim.value = false 
   setTimeout(() => showCreditAnim.value = true, 10) 
 }
@@ -153,7 +148,6 @@ const navItems = [
         </button>
 
         <div class="flex items-center gap-6">
-          
           <button @click="handleClaimDaily" class="hidden sm:block text-xs font-black uppercase tracking-widest text-lime-400 hover:text-lime-300 border border-lime-500/30 hover:border-lime-400 bg-lime-500/10 px-3 py-1.5 rounded-lg transition-all">
             Claim Daily
           </button>
@@ -176,20 +170,20 @@ const navItems = [
             <div class="text-right hidden sm:block">
               <div class="text-xs font-black text-slate-200 uppercase tracking-widest group-hover:text-lime-400 transition-colors">{{ authStore.user || 'DJ_Guest' }}</div>
             </div>
-            <div class="h-9 w-9 rounded-full bg-gradient-to-br from-yellow-400 to-lime-500 p-0.5 shadow-lg shadow-lime-900/50 group-hover:shadow-lime-400/50 transition-shadow">
-              <div class="h-full w-full bg-slate-900 rounded-full flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
+            
+            <div class="h-9 w-9 rounded-full bg-gradient-to-br from-yellow-400 to-lime-500 p-0.5 shadow-lg shadow-lime-900/50 group-hover:shadow-lime-400/50 transition-shadow overflow-hidden">
+              <img v-if="userAvatar" :src="userAvatar" alt="Avatar" class="h-full w-full object-cover rounded-full bg-slate-900" />
+              <div v-else class="h-full w-full bg-slate-900 rounded-full flex items-center justify-center">
+                <span class="text-sm font-black text-slate-300 uppercase">{{ authStore.user?.charAt(0) || 'D' }}</span>
               </div>
             </div>
+
           </router-link>
         </div>
       </header>
 
       <div class="flex-1 overflow-y-auto relative">
         <div class="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-lime-600/10 rounded-full blur-[100px] pointer-events-none"></div>
-        
         <router-view :key="route.fullPath" @credit-spent="handleCreditSpent"></router-view>
       </div>
     </main>
@@ -206,7 +200,6 @@ const navItems = [
           <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-lime-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
           </svg>
-          
           <span class="font-black uppercase tracking-widest text-xs" :class="popupType === 'error' ? 'text-red-400' : 'text-lime-400'">
             {{ popupMessage }}
           </span>

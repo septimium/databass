@@ -10,4 +10,8 @@ public interface SongRepository extends JpaRepository<Song, Long> {
     List<Song> findByUserUsernameOrderByCreatedAtDesc(String username);
 
     List<Song> findByUserUsernameAndIsPublicTrueOrderByCreatedAtDesc(String username);
+
+    List<Song> findByIsPublicTrueOrderByCreatedAtDesc();
+
+    List<Song> findByIsPublicTrueOrderByStreamCountDesc();
 }

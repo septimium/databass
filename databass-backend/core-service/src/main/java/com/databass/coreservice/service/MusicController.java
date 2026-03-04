@@ -137,4 +137,14 @@ public class MusicController {
 
         return ResponseEntity.ok(Map.of("streamCount", song.getStreamCount()));
     }
+
+    @GetMapping("/feed")
+    public ResponseEntity<List<Song>> getGlobalFeed(
+            @RequestParam(name = "sort", defaultValue = "recent") String sort
+    ) {
+        if ("popular".equals(sort)) {
+            return ResponseEntity.ok(songRepository.findByIsPublicTrueOrderByStreamCountDesc());
+        }
+        return ResponseEntity.ok(songRepository.findByIsPublicTrueOrderByCreatedAtDesc());
+    }
 }

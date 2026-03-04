@@ -1,6 +1,7 @@
 package com.databass.coreservice.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDateTime;
@@ -43,4 +44,9 @@ public class Song {
 
     @Column(nullable = false)
     private Integer streamCount = 0;
+
+    @JsonProperty("producer")
+    public String getProducerName() {
+        return user != null ? user.getUsername() : "Unknown";
+    }
 }
