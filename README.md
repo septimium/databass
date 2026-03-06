@@ -1,71 +1,52 @@
 # Databass
 
-**Databass** is a full-stack AI music generation platform. It allows users to turn simple text prompts into high-quality audio tracks using state-of-the-art AI models, complete with a built-in credit economy and prompt-enhancement engine.
+Databass is a full-stack, microservices-based AI music generation platform. It transforms text prompts into high-fidelity audio tracks using state-of-the-art AI models, featuring a built-in virtual economy and an automated prompt-enhancement engine.
 
----
-
-## Features
-* **AI Music Generation**: Queue and generate audio tracks asynchronously using Hugging Face models.
-* **LLM Prompt Enhancement**: Automatically upgrades basic user inputs (e.g., "sad piano") into professional-grade AI prompts using Google Gemini.
-* **Credit-Based Economy**: Users pay "credits" based on song duration and advanced parameter usage.
-* **Secure Authentication**: JWT-based user registration and login.
-* **Cloud Storage**: Audio files are safely stored and served via MinIO (S3-compatible storage).
+## Key Features
+* **AI Audio Generation:** Asynchronous track rendering via Hugging Face inference models.
+* **Prompt Engineering:** Automated LLM-based prompt enhancement using Google Gemini.
+* **Virtual Economy:** Dynamic credit system based on track duration, claim streaks, and parameter complexity.
+* **Social Ecosystem:** Public producer profiles, global discover feeds, and real-time streaming analytics.
+* **Scalable Architecture:** Spring Cloud microservices communicating via an API Gateway and Eureka Service Registry.
 
 ## Tech Stack
-**Frontend:**
-* Vue 3 + Vite
-* Tailwind CSS
-* Pinia (State Management)
-* Vue Router
-
-**Backend:**
-* Java / Spring Boot
-* PostgreSQL (Database)
-* RabbitMQ (Asynchronous Task Queue)
-* MinIO (Object Storage)
-* APIs: Google Gemini & Hugging Face Inference
-
-## Current Status & Roadmap
-This project is currently under active development. 
-
-- [x] **Backend Engine**: DB, Auth, Economy, Queues, and AI integration complete.
-- [x] **Frontend Initialization**: Vue + Vite + Tailwind environment set up.
-- [x] **Infrastructure**: Docker Compose setup for local development.
-- [ ] **Frontend UI**: Login page, User Dashboard, and Audio Player (In Progress).
-- [ ] **Deployment**: Dockerize Spring Boot and Vue services for full production.
+* **Frontend:** Vue 3, Vite, Tailwind CSS, Pinia
+* **Backend:** Java 17, Spring Boot, Spring Cloud
+* **Infrastructure:** PostgreSQL, RabbitMQ, MinIO (S3-compatible storage), Docker
 
 ## Getting Started
 
+Because the application is fully containerized, deployment is handled entirely through Docker Compose.
+
 ### Prerequisites
-* Java 17+
-* Node.js & npm
-* Docker & Docker Desktop
-* API Keys for Google Gemini & Hugging Face
+* Docker and Docker Compose
+* API Keys for Google Gemini and Hugging Face
 
-### 1. Boot up the Infrastructure
-We use Docker Compose to run the required external services (Database, Message Queue, and S3 Storage) locally. Navigate to the root directory of the project and run:
+### 1. Environment Configuration
+Create a `.env` file in the root directory of the project and populate it with your API keys:
 
-```bash
-docker compose up -d
-```
-*Note: You can verify RabbitMQ is running at `http://localhost:15672` and MinIO at `http://localhost:9001`.*
-
-### 2. Run the Backend (Spring Boot)
-Open a new terminal window:
-```bash
-cd databass-backend
-# Ensure your application.properties and .env file are configured
-./mvnw spring-boot:run
+```env
+HF_TOKEN=your_huggingface_token
+JWT_SECRET_KEY=your_secure_jwt_secret
+GEMINI_API_KEY=your_gemini_api_key
 ```
 
-### 3. Run the Frontend (Vue.js)
-Open another terminal window:
+### 2. Bootstrapping the Platform
+Navigate to the root directory containing the `docker-compose.yml` and run:
+
 ```bash
-cd databass-frontend
-npm install
-npm run dev
+docker compose up --build
 ```
-The application will be available at `http://localhost:5173`.
+
+This command automatically pulls the required infrastructure images, compiles the Spring Boot microservices via Maven, builds the Vue application, and initializes the MinIO storage buckets.
+
+### 3. Application Access
+Once the containers are running, the platform services are available at the following local endpoints:
+
+* **Web Application:** `http://localhost:5173`
+* **API Gateway:** `http://localhost:8080`
+* **MinIO Storage Console:** `http://localhost:9001`
+* **RabbitMQ Management:** `http://localhost:15672`
 
 ---
 *Created as part of a thesis project.*
