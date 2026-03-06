@@ -112,7 +112,7 @@ const formatDateTime = (dateString) => {
           :class="currentSort === 'popular' ? 'bg-slate-800 text-yellow-400 shadow-lg' : 'text-slate-500 hover:text-slate-300'"
           class="px-6 py-2 rounded-md font-black uppercase tracking-widest text-xs transition-all"
         >
-          Top Rated
+          Most Popular
         </button>
       </div>
     </div>

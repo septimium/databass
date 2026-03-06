@@ -60,7 +60,7 @@ const faqs = [
   <div class="p-8 max-w-4xl mx-auto relative z-10 animate-fade-in-up pb-20">
     <div class="mb-12 text-center">
       <h1 class="text-4xl font-black uppercase tracking-widest text-slate-200 drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">
-        Data<span class="text-lime-400 drop-shadow-[0_0_15px_rgba(132,204,22,0.4)]">bass</span> Manual
+        Frequently Asked <span class="text-lime-400 drop-shadow-[0_0_15px_rgba(132,204,22,0.4)]">Questions</span>
       </h1>
       <p class="text-slate-500 font-bold uppercase tracking-widest mt-2">Knowledge Base & System Documentation</p>
     </div>
