@@ -1,47 +1,131 @@
-version: '3.8'
-
 services:
-  postgres-db:
-    image: postgres:15-alpine
-    container_name: databass_postgres
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password 
-      POSTGRES_DB: databass
+
+  postgres:
+    image: postgres:15
+    container_name: databass-db
     ports:
       - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: databass
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    restart: unless-stopped
+    networks:
+      - databass-net
 
   rabbitmq:
-    image: rabbitmq:3-management-alpine
-    container_name: databass_rabbitmq
-    environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
+    image: rabbitmq:3.12-management
+    container_name: databass-mq
     ports:
-      - "5672:5672"   
-      - "15672:15672" 
-    volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
-    restart: unless-stopped
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - databass-net
+
+  minio-init:
+    image: minio/mc
+    container_name: databass-minio-init
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      until (/usr/bin/mc alias set myminio http://minio:9000 minioadmin minioadmin);
+      do echo 'Waiting for MinIO to start...'; sleep 2; done;
+      /usr/bin/mc mb myminio/databass-songs --ignore-existing;
+      /usr/bin/mc anonymous set download myminio/databass-songs;
+      echo 'Bucket created successfully!';
+      exit 0;
+      "
+    networks:
+      - databass-net
 
   minio:
-    image: minio/minio:latest
-    container_name: databass_minio
+    image: minio/minio
+    container_name: databass-storage
+    ports:
+      - "9000:9000"
+      - "9001:9001"
     environment:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
     command: server /data --console-address ":9001"
-    ports:
-      - "9000:9000" 
-      - "9001:9001" 
     volumes:
       - minio_data:/data
-    restart: unless-stopped
+    networks:
+      - databass-net
+
+  discovery-server:
+    image: maven:3.9-eclipse-temurin-21
+    container_name: databass-discovery
+    working_dir: /app/databass-backend/discovery-service
+    volumes:
+      - .:/app
+      - maven_cache:/root/.m2
+    ports:
+      - "8761:8761"
+    command: sh -c "mvn clean package -DskipTests && java -jar target/*.jar"
+    depends_on:
+      - postgres
+      - rabbitmq
+    networks:
+      - databass-net
+
+  api-gateway:
+    image: maven:3.9-eclipse-temurin-21
+    container_name: databass-gateway
+    working_dir: /app/databass-backend/api-gateway
+    volumes:
+      - .:/app
+      - maven_cache:/root/.m2
+    ports:
+      - "8080:8080"
+    command: sh -c "mvn clean package -DskipTests && java -jar target/*.jar"
+    depends_on:
+      - discovery-server
+    networks:
+      - databass-net
+
+  core-service:
+    image: maven:3.9-eclipse-temurin-21
+    container_name: databass-core
+    env_file:
+      - .env
+    working_dir: /app/databass-backend/core-service
+    volumes:
+      - .:/app
+      - maven_cache:/root/.m2
+    ports:
+      - "8081:8081"
+    command: sh -c "mvn clean package -DskipTests && java -jar target/*.jar"
+    depends_on:
+      - discovery-server
+      - postgres
+      - rabbitmq
+      - minio
+    networks:
+      - databass-net
+
+  frontend:
+    image: node:20-alpine
+    container_name: databass-frontend
+    working_dir: /app/databass-frontend
+    volumes:
+      - .:/app
+    ports:
+      - "5173:5173"
+    command: sh -c "npm install && npm run dev -- --host"
+    depends_on:
+      - api-gateway
+      - core-service
+    networks:
+      - databass-net
+
+networks:
+  databass-net:
+    driver: bridge
 
 volumes:
   postgres_data:
-  rabbitmq_data:
   minio_data:
+  maven_cache:

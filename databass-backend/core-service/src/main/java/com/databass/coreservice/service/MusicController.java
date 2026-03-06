@@ -47,7 +47,7 @@ public class MusicController {
             return ResponseEntity.status(402).body(e.getMessage());
         }
 
-        String finalPrompt = request.getPrompt();
+        String finalPrompt;
 
         if (request.isEnhancePrompt()) {
             finalPrompt = geminiClient.enhancePrompt(request.getPrompt());

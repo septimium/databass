@@ -45,6 +45,7 @@ public class MusicConsumer {
         } catch (Exception e) {
             System.err.println("Generation Failed: " + e.getMessage());
             song.setStatus("FAILED");
+            song.setPublic(false);
             songRepository.save(song);
         }
     }

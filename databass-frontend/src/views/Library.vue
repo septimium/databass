@@ -46,7 +46,8 @@ const togglePlay = (track) => {
 
   if (currentAudio.value) currentAudio.value.pause()
 
-  currentAudio.value = new Audio(track.s3Url)
+  const audioUrl = track.s3Url.replace('http://minio:9000', 'http://localhost:9000')
+  currentAudio.value = new Audio(audioUrl)
   currentAudio.value.play()
   playingTrackId.value = track.id
 
@@ -208,7 +209,19 @@ const formatDuration = (seconds) => {
             <span class="w-1 h-1 rounded-full bg-slate-700"></span>
             <span title="Guidance">G: {{ track.guidanceScale || 3.2 }}</span>
           </div>
-
+            <a 
+              v-if="track.status === 'COMPLETED' || track.status === 'READY'"
+              :href="track.s3Url.replace('http://minio:9000', 'http://localhost:9000')" 
+              :download="`${track.title || 'Databass_Track'}.mp3`"
+              target="_blank"
+              @click.stop
+              class="flex items-center justify-center text-slate-500 hover:text-lime-400 transition-all p-2 rounded-full hover:bg-lime-500/10 shrink-0"
+              title="Download MP3"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+            </a>
           <button 
             @click="openEditModal(track)"
             :disabled="track.status === 'PENDING'"
