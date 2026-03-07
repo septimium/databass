@@ -1,7 +1,7 @@
-package com.databass.coreservice.service;
+package com.databass.authservice.service;
 
-import com.databass.coreservice.dto.AuthRequest;
-import com.databass.coreservice.model.User;
+import com.databass.authservice.dto.AuthRequest;
+import com.databass.authservice.model.User;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

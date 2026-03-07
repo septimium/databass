@@ -1,4 +1,4 @@
-package com.databass.coreservice.dto;
+package com.databass.authservice.dto;
 import lombok.Data;
 
 @Data

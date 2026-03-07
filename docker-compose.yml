@@ -86,6 +86,24 @@ services:
     networks:
       - databass-net
 
+  auth-service:
+      image: maven:3.9-eclipse-temurin-21
+      container_name: databass-auth
+      env_file:
+        - .env
+      working_dir: /app/databass-backend/auth-service
+      volumes:
+        - .:/app
+        - maven_cache:/root/.m2
+      ports:
+        - "8082:8082"
+      command: sh -c "mvn clean package -DskipTests && java -jar target/*.jar"
+      depends_on:
+        - discovery-server
+        - postgres
+      networks:
+        - databass-net
+
   core-service:
     image: maven:3.9-eclipse-temurin-21
     container_name: databass-core

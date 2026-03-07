@@ -1,8 +1,8 @@
-package com.databass.coreservice.service;
+package com.databass.authservice.service;
 
-import com.databass.coreservice.model.User;
-import com.databass.coreservice.repository.UserRepository;
-import com.databass.coreservice.security.JwtUtil;
+import com.databass.authservice.model.User;
+import com.databass.authservice.repository.UserRepository;
+import com.databass.authservice.security.JwtUtil;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;

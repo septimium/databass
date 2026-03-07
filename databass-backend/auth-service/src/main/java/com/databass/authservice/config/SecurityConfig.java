@@ -1,7 +1,7 @@
-package com.databass.coreservice.config;
+package com.databass.authservice.config;
 
-import com.databass.coreservice.security.JwtAuthFilter;
-import com.databass.coreservice.service.UserDetailsServiceImpl;
+import com.databass.authservice.security.JwtAuthFilter;
+import com.databass.authservice.service.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -40,6 +40,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/auth/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
