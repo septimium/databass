@@ -29,7 +29,7 @@ public class UserController {
         return ResponseEntity.ok(Map.of(
                 "username", user.getUsername(),
                 "credits", user.getCredits(),
-                "avatarUrl", user.getAvatarUrl() != null ? user.getAvatarUrl() : "" // 👈 ADD THIS LINE
+                "avatarUrl", user.getAvatarUrl() != null ? user.getAvatarUrl() : ""
         ));
     }
 
